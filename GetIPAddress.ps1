@@ -60,7 +60,3 @@ Function Get-OSCRDPIPaddress
 	}
 
 }
-
-Get-OSCRDPIPaddress 
-
-Get-OSCRDPIPaddress | Export-Csv RDP_Connection_Log.csv -NoTypeInformation -Encoding UTF8
