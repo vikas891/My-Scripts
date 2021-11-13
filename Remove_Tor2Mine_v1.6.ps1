@@ -15,6 +15,7 @@
 #########################################################################################
 Param ([switch]$ForceEnabled)
 
+#Logging the Script's Transcript
 $LogFile = "$env:windir\temp\" + $env:COMPUTERNAME + "_$(((get-date).ToUniversalTime()).ToString("yyyyMMddTHHmmssZ"))" + ".txt"
 Start-Transcript -Path $LogFile -Append
 
@@ -36,24 +37,19 @@ $schtasks = @()
 
 function Detect {
 
-"==========================="
-"Listing Bad Services"
-"==========================="
+    "==========================="
+    "Listing Bad Services"
+    "==========================="
+    Write-Host $servcount.Count "services detected."
+    $serv |  select Name, DisplayName, State, PathName
+    if ($null -eq $serv) {"No services match the set criteria."}
 
-Write-Host $servcount.Count "services detected."
-$serv |  select Name, DisplayName, State, PathName
-
-if ($null -eq $serv) {"No services match the set criteria."}
-
-"==========================="
-"Listing Bad Tasks"
-"==========================="
-
-$schtasks |  Format-list 
-
-Write-Host $schtasks.Count "task(s) detected."
-
-if ($null -eq $serv) {"No Tasks  match the set criteria."}
+    "==========================="
+    "Listing Bad Tasks"
+    "==========================="
+    $schtasks |  Format-list 
+    Write-Host $schtasks.Count "task(s) detected."
+    if ($null -eq $serv) {"No Tasks  match the set criteria."}
 
 }
 
@@ -61,56 +57,36 @@ function RemoveTor2Mine {
 
 param ([switch]$Force)
 
-if ($schtasks.Count -gt 0 -or $servcount.Count -gt 0)
-{
+if ($schtasks.Count -gt 0 -or $servcount.Count -gt 0) {
 
-if (!$Force) {
-
-"==========================="
-$Confirm = Read-Host "Continue with Removal?[y/n]"
-"==========================="    
-
-}
-
-if ($Confirm -eq 'y' -or $Force) 
-    
-   {
+    if (!$Force) {
     "==========================="
-    "Removing Bad Tasks"
-    "==========================="
-    
-    $schtasks | ForEach-Object {
-    
-    "Removing " + $_.Taskname
-    Unregister-ScheduledTask -TaskName $_.TaskName -Confirm:$false}
-
-    "==========================="
-    "Removing Bad Services"
-    "==========================="
-
-    $serv | ForEach-object{ 
-    
-    "Removing " + $_.Name
-    cmd /c  sc delete $_.Name}
-
+    $Confirm = Read-Host "Continue with Removal?[y/n]"
+    "==========================="    
     }
-}
 
+    if ($Confirm -eq 'y' -or $Force)     
+    {
+        "==========================="
+        "Removing Bad Tasks"
+        "==========================="
+        $schtasks | ForEach-Object {
+        "Removing " + $_.Taskname
+        Unregister-ScheduledTask -TaskName $_.TaskName -Confirm:$false}
+
+        "==========================="
+        "Removing Bad Services"
+        "==========================="
+        $serv | ForEach-object{ 
+        "Removing " + $_.Name
+        cmd /c  sc delete $_.Name }
+    }
+  }
 }
 
 Detect
 
-if ($ForceEnabled)
-    {
-
-    RemoveTor2Mine -Force
-
-    }
-else
-    {
-
-    RemoveTor2Mine
-
-    }
+if ($ForceEnabled) { RemoveTor2Mine -Force }
+else { RemoveTor2Mine }
 
 Stop-Transcript
