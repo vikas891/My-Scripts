@@ -35,8 +35,8 @@ $schtasks = @()
     $schtasks += $object
 }
 
+#Only detects dnd displays the malicious tasks and services
 function Detect {
-
     "==========================="
     "Listing Bad Services"
     "==========================="
@@ -50,9 +50,9 @@ function Detect {
     $schtasks |  Format-list 
     Write-Host $schtasks.Count "task(s) detected."
     if ($null -eq $serv) {"No Tasks  match the set criteria."}
-
 }
 
+#Attempts to delete the malicious tasks and services which are found by Detect
 function RemoveTor2Mine {
 
 param ([switch]$Force)
