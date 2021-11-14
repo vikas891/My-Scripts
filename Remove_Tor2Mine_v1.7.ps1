@@ -58,8 +58,8 @@ function Detect {
     "==========================="
     "Listing Active Processes"
     "==========================="
+    Write-Host $ProcessCount.Count "processes detected."
     $Process | select Name, CommandLine
-    sleep -s 5
 }
 
 #Attempts to delete the malicious tasks and services which are found by Detect
