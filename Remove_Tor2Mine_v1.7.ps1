@@ -59,6 +59,7 @@ function Detect {
     "Listing Active Processes"
     "==========================="
     $Process | select Name, CommandLine
+    sleep -s 5
 }
 
 #Attempts to delete the malicious tasks and services which are found by Detect
