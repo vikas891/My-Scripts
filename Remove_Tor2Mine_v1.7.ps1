@@ -100,7 +100,7 @@ if ($schtasks.Count -gt 0 -or $servcount.Count -gt 0 -or $ProcessCount.Count -gt
 }
 
 Detect
-
+sleep -s 5
 if ($ForceEnabled) { RemoveTor2Mine -Force }
 else { RemoveTor2Mine }
 
