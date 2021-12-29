@@ -1,0 +1,1 @@
+Tor2Mine installs scheduled tasks and Windows services as persistence mechanism.  These scripts help automate their removal and also terminates active processes. 
